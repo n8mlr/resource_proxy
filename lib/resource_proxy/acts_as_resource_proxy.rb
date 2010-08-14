@@ -31,7 +31,9 @@ module ResourceProxy
     def find(*args)
       first_arg = args.first
       if first_arg.kind_of? Fixnum
-        self.resource_class.find(first_arg)
+        ob = self.new
+        ob.resource = self.resource_class.find(first_arg)
+        ob
       else
         if first_arg.to_sym == :all
           self.resource_class.find(:all)

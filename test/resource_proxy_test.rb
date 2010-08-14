@@ -52,6 +52,7 @@ class ResourceProxyTest < ActiveSupport::TestCase
       SimpleProxyTest.find(:foobar)
     end
   end
+
   
   def test_find_an_object_with_id_returns_object
     CustomerResource.expects(:find).with(1).returns({})
