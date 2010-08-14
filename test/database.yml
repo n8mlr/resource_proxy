@@ -1,0 +1,10 @@
+sqlite3:
+  :adapter: sqlite3
+  :dbfile: vendor/plugins/resource_proxy/test/resource_proxy_test.sqlite3.db
+  
+mysql:
+  :adapter: mysql
+  :host: localhost
+  :username: root
+  :password: inflames
+  :database: resoure_proxy_test
