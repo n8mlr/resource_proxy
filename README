@@ -1,13 +1,32 @@
-ResourceProxy
+==ResourceProxy
 =============
 
-Introduction goes here.
+Resource Proxy is a tool designed to make life with ActiveResource a bit easier. One of the biggest influences for creating this gem was the difficulty in working with forms tied to remote resources. ResourceProxy sits in between your ActiveResource model and your controllers and views to help working with ActiveResource less odd and more fun.
+
+You still need to set up your local ActiveResource models, but this will help negotiation between your local application and your remote application.
+
+For the time being, only a small subset of functionality present in ActiveRecord is supported. 
 
 
-Example
-=======
+===Creating a proxy
 
-Example goes here.
+class PlainRubyObject
+  include ResourceProxy
+  
+  acts_as_resource_proxy do |c|
+    c.resource_class = CustomerResource # your local ActiveResource model
+    c.capturable = [:login, :email, :first_name, :last_name] # attributes which will be sent to the service
+  end
+end
 
 
-Copyright (c) 2010 [name of plugin creator], released under the MIT license
+proxy = PlainOb.new({ "login" => "myname", 
+                      "email" => "nate@natemiller.org",
+                      "first_name" => "nate",
+                      "last_name" => "miller" }) # this is similar to how ActiveRecord parses parameters, e.g. MyOb.new(params[:object])
+proxy.save # note, this would fail if you tried to call your ActiveResource object directly 
+
+===
+
+
+Copyright (c) 2010 Nate Miller, released under the MIT license
