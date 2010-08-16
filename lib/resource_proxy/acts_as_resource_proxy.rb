@@ -45,7 +45,6 @@ module ResourceProxy
     
     # Delete from a hash any attributes which have not been declared in captureable=
     def filter_attributes(attr_hash = {})
-      symbolized_keys = []      
       attr_hash.delete_if { |k,v| !self.capturable_attributes.include?(k.to_sym) }
       attr_hash
     end
@@ -71,6 +70,12 @@ module ResourceProxy
       unless resource.save
         @local_errors = resource.errors
       end
+      
+      @local_errors.empty?
+    end
+    
+    def errors
+      resource.errors
     end
 
     def errors_on(attribute)
