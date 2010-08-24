@@ -21,7 +21,21 @@ module ResourceProxy
     def capturable=(attrs = [])
       attrs.each do |k|
         self.capturable_attributes << k.to_sym 
-        attr_accessor k.to_sym
+        # Write our dynamic getter setters
+        define_method("#{k.to_sym}=") do |t|
+          self.instance_variable_set("@#{k}", t)
+          # hook into resource and add object
+          self.resource.send(k.to_sym, t)
+        end
+        
+        define_method(k.to_sym) do
+          # Refine - need to make sure that our proxy object and
+          # resource remain properly synchronized
+          if self.resource
+            return self.resource.send(k.to_sym)
+          end
+          self.instance_variable_get("@#{k}")
+        end
       end
     end
     
@@ -74,6 +88,7 @@ module ResourceProxy
       @local_errors.empty?
     end
     
+    # Return all errors located on the resource
     def errors
       resource.errors
     end
@@ -81,8 +96,13 @@ module ResourceProxy
     def errors_on(attribute)
       
     end
-    
 
+    private
+    
+      # Create an attribute reader and writer method for each of 
+      # the capturable attributes. These methods ensure sync between
+      # the local proxy and the proxy object
+      
     
     
   end

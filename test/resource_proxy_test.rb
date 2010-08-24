@@ -11,7 +11,7 @@ class SimpleProxyTest
   
   acts_as_resource_proxy do |config|
     config.resource_class = CustomerResource
-    config.capturable = [:login]
+    config.capturable = [:login, :first_name]
   end
 end
 
@@ -57,6 +57,14 @@ class ResourceProxyTest < ActiveSupport::TestCase
   def test_find_an_object_with_id_returns_object
     CustomerResource.expects(:find).with(1).returns({})
     SimpleProxyTest.find(1)
+  end
+
+  def test_found_resource_binds_variables_to_proxy_object
+    resource = mock("resource")
+    resource.stubs(:first_name).returns("bob")
+    CustomerResource.expects(:find).with(1).returns(resource)
+    proxy_ob = SimpleProxyTest.find(1)
+    assert_equal "bob", proxy_ob.first_name
   end
   
   # def test_errors_from_resource_transfer_to_proxy
