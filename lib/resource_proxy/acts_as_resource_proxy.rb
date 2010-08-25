@@ -70,11 +70,14 @@ module ResourceProxy
     # If we receive a hash of values, like as we would through a Rails form request, 
     # we set an instance variable for each pair
     def initialize(attrs = {})
-      filtered_attributes = self.class.filter_attributes(attrs)
-      self.resource = self.resource_class.new(filtered_attributes)
-      filtered_attributes.each do |k,v|
-        ivar_name = k.underscore
-        self.instance_variable_set("@#{ivar_name}", v)
+      @local_errors = []
+      unless attrs.empty?
+        filtered_attributes = self.class.filter_attributes(attrs)
+        self.resource = self.resource_class.new(filtered_attributes)
+        filtered_attributes.each do |k,v|
+          ivar_name = k.underscore
+          self.instance_variable_set("@#{ivar_name}", v)
+        end
       end
     end
     
@@ -90,7 +93,10 @@ module ResourceProxy
     
     # Return all errors located on the resource
     def errors
-      resource.errors
+      if resource
+        @local_errors = resource.errors
+      end
+      @local_errors
     end
 
     def errors_on(attribute)
